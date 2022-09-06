@@ -1893,7 +1893,7 @@ local E2Commands = {
 		if self.lastang then
 			return {self.lastang.p, self.lastang.y, self.lastang.r}
 		else
-			return {0,0,0}
+			return Angle()
 		end
 	end,
 
