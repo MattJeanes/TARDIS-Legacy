@@ -4,6 +4,7 @@
 	"tags"		:	[ "roleplay", "fun" ],
 	"ignore"	:
 	[
+		"CODEOWNERS",
 		"*.md",
 		"*.txt",
 		"*.git*"
