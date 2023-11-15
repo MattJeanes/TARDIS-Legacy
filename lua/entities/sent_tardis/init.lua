@@ -34,6 +34,7 @@ util.AddNetworkString("TARDIS-Reappear")
 util.AddNetworkString("TARDIS-Materialize")
 util.AddNetworkString("TARDIS-SetVortex")
 util.AddNetworkString("TARDIS-NoCollideTeleport")
+util.AddNetworkString("TARDIS-Deprecated")
 
 net.Receive("TARDIS-TakeDamage", function(len,ply)
 	if ply:IsAdmin() or ply:IsSuperAdmin() then
@@ -227,6 +228,9 @@ function ENT:Initialize()
 		net.WriteEntity(self)
 		net.WriteEntity(self.interior)
 	net.Broadcast()
+
+	net.Start("TARDIS-Deprecated")
+	net.Send(self.owner)
 	
 	self.dematvalues={
 		150,
