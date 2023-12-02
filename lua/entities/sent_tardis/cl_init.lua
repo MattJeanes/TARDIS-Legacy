@@ -226,6 +226,28 @@ net.Receive("TARDIS-SetInterior", function()
 	ent.interior=net.ReadEntity()
 end)
 
+net.Receive("TARDIS-Deprecated", function()
+	if file.Exists("tardis_deprecated_check.txt", "DATA") then return end
+	if scripted_ents.GetStored("gmod_tardis") then return end
+
+	local function write_file()
+		file.Write(
+			"tardis_deprecated_check.txt",
+			"This file prevents the deprecated message from appearing when spawning the legacy TARDIS if the new addon is not detected"
+		)
+	end
+
+	Derma_Query(
+		"The TARDIS (Legacy) is now deprecated.\n\n"
+		.. "Feature parity has now been achieved with the new addon and this version will no longer be updated.\n\n"
+		.. "Please consider subscribing to the new addon instead. Open now in Steam Workshop?",
+		"TARDIS (Legacy)",
+		"Yes", function() gui.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/?id=307175678") end,
+		"Later", function() end,
+		"Don't show again", write_file
+	)
+end)
+
 local tpsounds={}
 tpsounds[0]={ // normal
 	"legtar/demat.wav",
