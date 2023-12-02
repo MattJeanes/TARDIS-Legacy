@@ -367,6 +367,21 @@ T.CustomHooks = {
                 door_int:SetBodygroup(3,1) -- 3D sign
             end
         end,
+    },
+    scanner_override = {
+        inthooks = {
+            ["PostScannersToggled"] = true,
+            ["PostInitialize"] = true,
+        },
+        func = function(ext, int, on)
+            if not on then
+                for k,v in ipairs(int.scanners) do
+                    if v.submatid then
+                        v.ent:SetSubMaterial(v.submatid, "models/drmatt/legtar/tardisscanner2")
+                    end
+                end
+            end
+        end,
     }
 }
 
