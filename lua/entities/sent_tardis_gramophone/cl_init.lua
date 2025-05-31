@@ -17,38 +17,7 @@ function ENT:OnRemove()
 	self:StopTheme()
 end
 
-local sounds={
-	{"Main Theme (2005-2008)", "theme1"},
-	{"Main Theme (2009)", "theme2"},
-	{"Main Theme (2010-2012)", "theme3"},
-	{"Main Theme (2013-Present)", "theme4"},
-	{"Ninth Doctor", "nine"},
-	{"Tenth Doctor", "ten"},
-	{"Eleventh Doctor", "eleven"},
-	{"Rose Tyler", "rose"},
-	{"Martha Jones", "martha"},
-	{"Donna Noble", "donna"},
-	{"Amy Pond", "amy"},
-	{"River Song", "river"},
-	{"Clara Oswald", "clara"},
-	{"Abigail's Song", "abigail"},
-	{"This is Gallifrey", "thisisgallifrey"},
-	{"Gallifrey", "gallifrey"},
-	{"Vale Decem", "valedecem"},
-	{"The Majestic Tale", "majestictale"},
-	{"Forgiven", "forgiven"},
-	{"The Wedding of River Song", "weddingofriversong"},
-	{"All the Strange Creatures", "allthestrangecreatures"},
-	{"You're Fired", "yourefired"},
-	{"Whose Enigma", "whoseenigma"},
-	{"The Long Song", "thelongsong"},
-	{"Infinite Potential", "infinitepotential"},
-	{"The New Doctor", "thenewdoctor"},
-	{"My Husband's Home", "myhusbandshome"},
-	{"Doomsday", "doomsday"},
-	{"Dark and Endless Dalek Night", "darkandendlessdaleknight"},
-	{"The Greatest Story Never Told", "greateststorynevertold"},
-}
+local sounds={}
 
 net.Receive("TARDISInt-Gramophone-Send", function(l,ply)
 	local gramophone=net.ReadEntity()
@@ -68,7 +37,7 @@ net.Receive("TARDISInt-Gramophone-Send", function(l,ply)
 			if custom and not (customstr=="") then
 				addr=customstr
 			elseif choice and sounds[choice] then
-				addr="http://mattjeanes.com/data/tardis/"..sounds[choice][2]..".mp3"
+				addr="https://cdn.mattjeanes.com/tardis/"..sounds[choice][2]..".mp3"
 			else
 				return
 			end
@@ -79,7 +48,7 @@ net.Receive("TARDISInt-Gramophone-Send", function(l,ply)
 					station:Play()
 					gramophone.sound=station
 				else
-					LocalPlayer():ChatPrint("ERROR: Failed to load theme (check console for BASS error!)")
+					LocalPlayer():ChatPrint("ERROR: Failed to load song (check console for BASS error!)")
 				end
 			end)
 		end
@@ -123,15 +92,17 @@ net.Receive("TARDISInt-Gramophone-GUI", function()
 	label:SetPos(10,30) // Position
 	label:SetColor(Color(255,255,255,255)) // Color
 	label:SetFont("Trebuchet24")
-	label:SetText("Select theme tune") // Text
+	label:SetText("Select a song") // Text
 	label:SizeToContents() // make the control the same size as the text.
 	
 	local listview = vgui.Create( "DListView", window )
 	listview:SetPos(10,60)
 	listview:SetSize(180,16+221)
 	listview:SetMultiSelect( false )
-	listview:AddColumn( "Themes" )
+	listview:AddColumn( "Songs" )
 	listview.OnClickLine = function(self,line)
+		if self.loading then return end
+		if self.errored then return end
 		local name=line:GetValue(1)
 		self:ClearSelection()
 		self:SelectItem(line)
@@ -140,10 +111,6 @@ net.Receive("TARDISInt-Gramophone-GUI", function()
 				choice=k
 			end
 		end
-	end
-	
-	for k,v in pairs(sounds) do
-		listview:AddLine( v[1] )
 	end
 	
 	local button = vgui.Create( "DButton", window )
@@ -181,6 +148,36 @@ net.Receive("TARDISInt-Gramophone-GUI", function()
 			window:Close()
 		end
 	end
+
+	listview.loading = true
+	listview:AddLine("Loading songs...")
+	http.Fetch("https://cdn.mattjeanes.com/tardis/songs.json", function(body)
+		if not listview then return end
+		default_music = util.JSONToTable(body)
+		if not default_music then
+			print("Failed to parse preloaded music JSON")
+			listview:Clear()
+			listview:AddLine("Failed to load songs!")
+			listview.loading = false
+			listview.errored = true
+			return
+		end
+		listview:Clear()
+		for _,catObj in ipairs(default_music) do
+				for _,song in ipairs(catObj.songs) do
+						table.insert(sounds, {song.name, song.id})
+						listview:AddLine(song.name)
+				end
+		end
+		listview.loading = false
+	end, function(err)
+		if not listview then return end
+		print("Failed to fetch preloaded music: " .. err)
+		listview:Clear()
+		listview:AddLine("Failed to load songs!")
+		listview.loading = false
+		listview.errored = true
+	end)
 end)
 
 function ENT:Think()
