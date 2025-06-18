@@ -2,7 +2,7 @@ TARDIS Legacy
 ===============
 A working entity version of the TARDIS for Garry's Mod.
 
-Check out the new version: https://github.com/MattJeanes/TARDIS
+Check out the new version: https://github.com/AmyJeanes/TARDIS
 
 Usage
 ===============
