@@ -5,10 +5,6 @@ else
 	ENT.Base			= "base_gmodentity"
 end 
 ENT.PrintName		= "​TARDIS (Legacy)"
-ENT.Author			= "Dr. Matt"
-ENT.Contact			= "mattjeanes23@gmail.com"
-ENT.Instructions	= "Use with the sonic or press E to pilot."
-ENT.Purpose			= "Time and Relative Dimension in Space"
 ENT.RenderGroup = RENDERGROUP_BOTH
 ENT.Category		= "Doctor Who - TARDIS (Legacy)"
 
