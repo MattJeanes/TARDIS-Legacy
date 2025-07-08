@@ -37,7 +37,7 @@ net.Receive("TARDISInt-Gramophone-Send", function(l,ply)
 			if custom and not (customstr=="") then
 				addr=customstr
 			elseif choice and sounds[choice] then
-				addr="https://cdn.mattjeanes.com/tardis/"..sounds[choice][2]..".mp3"
+				addr="https://cdn.amyjeanes.com/tardis/"..sounds[choice][2]..".mp3"
 			else
 				return
 			end
@@ -151,7 +151,7 @@ net.Receive("TARDISInt-Gramophone-GUI", function()
 
 	listview.loading = true
 	listview:AddLine("Loading songs...")
-	http.Fetch("https://cdn.mattjeanes.com/tardis/songs.json", function(body)
+	http.Fetch("https://cdn.amyjeanes.com/tardis/songs.json", function(body)
 		if not listview then return end
 		default_music = util.JSONToTable(body)
 		if not default_music then
