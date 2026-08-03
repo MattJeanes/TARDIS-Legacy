@@ -394,13 +394,11 @@ PART.Animate = true
 PART.Model = "models/weapons/c_sonicsd.mdl"
 
 if CLIENT then
+    -- Hide sonic in the dispenser if the player is holding it
     function PART:Think()
         local weapon = LocalPlayer():GetActiveWeapon()
-        if IsValid(weapon) and weapon:GetClass() == "swep_sonicsd" then
-            self:SetColor(Color(0,0,0,0))
-        else
-            self:SetColor(Color(255,255,255,255))
-        end
+        local holding = IsValid(weapon) and weapon:GetClass() == "swep_sonicsd"
+        self.alpha = holding and 0 or 1
     end
 end
 
