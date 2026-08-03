@@ -7,6 +7,7 @@
 		"CODEOWNERS",
 		"*.md",
 		"*.txt",
-		"*.git*"
+		"*.git*",
+		".github/*"
 	]
 }
